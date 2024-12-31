@@ -1,9 +1,15 @@
-let fields = [null, null, null, null, null, null, null, null, null];
+let fields = [null, null, null, null, null, null, null, null, null]; // Felder des Spielfelds
 
 const WINNING_COMBINATIONS = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // horizontal
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // vertical
-    [0, 4, 8], [2, 4, 6], // diagonal
+  // Gewinnkombinationen
+  [0, 1, 2], // horizontal
+  [3, 4, 5], // horizontal
+  [6, 7, 8], // horizontal
+  [0, 3, 6], // vertical
+  [1, 4, 7], // vertical
+  [2, 5, 8], // vertical
+  [0, 4, 8], // diagonal
+  [2, 4, 6], // diagonal
 ];
 
 let currentPlayer = "circle"; // Start mit "circle"
@@ -21,30 +27,44 @@ function handleClick(cell, index) {
     currentPlayer = currentPlayer === "circle" ? "cross" : "circle";
 
     if (isGameFinished()) {
-        const winCombination = getWinningCombination();
-        drawWinningLine(winCombination);
+      // Überprüfe, ob das Spiel beendet ist
+      const winCombination = getWinningCombination(); // Hole die kombination, die gewonnen wurde
+      drawWinningLine(winCombination); // Zeichne die Linie
     }
   }
 }
 
 function isGameFinished() {
-    return fields.every((field) => field !== null) || getWinningCombination() !== null;
+  // Überprüfe, ob das Spiel beendet ist
+  return (
+    // Wenn alle Felder besetzt sind oder ein Spieler gewonnen hat
+    fields.every((field) => field !== null) || getWinningCombination() !== null
+  );
 }
 function getWinningCombination() {
-    for (let i = 0; i < WINNING_COMBINATIONS.length; i++) {
-        const [a, b, c] = WINNING_COMBINATIONS[i];
-        if (fields[a] === fields[b] && fields[b] === fields[c] && fields[a] !== null) {
-            return WINNING_COMBINATIONS[i];
-        }
+  // Überprüfe, ob ein Spieler gewonnen hat
+  for (let i = 0; i < WINNING_COMBINATIONS.length; i++) {
+    // Gehe alle Kombinationen durch
+    const [a, b, c] = WINNING_COMBINATIONS[i]; // Hole die drei Felder
+    if (
+      // Wenn die Felder gleich sind und nicht null
+      fields[a] === fields[b] && // Wenn die Felder gleich sind
+      fields[b] === fields[c] && // Wenn die Felder gleich sind
+      fields[a] !== null // Wenn die Felder nicht null sind
+    ) {
+      // Dann ist die Kombination gewonnen
+      return WINNING_COMBINATIONS[i]; // Gebe die Kombination zurück
     }
-    return null;
+  }
+  return null; // Ansonsten gebe null zurück
 }
 
 function generateCircleSVG() {
-  const color = "#00B0EF";
-  const width = 70;
-  const height = 70;
-  return `<svg width="${width}" height="${height}">
+  // Generiere ein Kreis SVG
+  const color = "#00B0EF"; // Setze die Farbe auf blau
+  const width = 70; // Setze die Breite auf 70
+  const height = 70; // Setze die Höhe auf 70
+  return `<svg width="${width}" height="${height}">  
               <circle cx="35" cy="35" r="30" stroke="${color}" stroke-width="5" fill="none">
                 <animate attributeName="stroke-dasharray" from="0 188.5" to="188.5 0" dur="1s" fill="freeze" />
               </circle>
@@ -52,11 +72,12 @@ function generateCircleSVG() {
 }
 
 function generateCrossSVG() {
-  const color = "#FFC000";
-  const width = 70;
-  const height = 70;
-  const svgHtml = `
-      <svg width="${width}" height="${height}">
+  // Generiere ein Kreuz SVG
+  const color = "#FFC000"; // Setze die Farbe auf gelb
+  const width = 70; // Setze die Breite auf 70
+  const height = 70; // Setze die Höhe auf 70
+  const svgHtml = `  
+      <svg width="${width}" height="${height}">  
         <line x1="0" y1="0" x2="${width}" y2="${height}"
           stroke="${color}" stroke-width="5">
           <animate attributeName="x2" values="0; ${width}" dur="1s" />
@@ -69,27 +90,44 @@ function generateCrossSVG() {
         </line>
       </svg>
     `;
-  return svgHtml;
+  return svgHtml; // Gebe das SVG zurück
 }
 
 function drawWinningLine(combination) {
-    const lineColor = 'green';
-    const lineWidth = 5;
-    const startCell = document.querySelectorAll(`td`)[combination[0]];
-    const endCell = document.querySelectorAll(`td`)[combination[2]];
-    const startRect = startCell.getBoundingClientRect();
-    const endRect = endCell.getBoundingClientRect();
-    const lineLength = Math.sqrt(
-        Math.pow(endRect.left - startRect.left, 2) + Math.pow(endRect.top - startRect.top, 2)
-    );
-    const lineAngle = Math.atan2(endRect.top - startRect.top, endRect.left - startRect.left);
-    const line = document.createElement('div');
-    line.style.position = 'absolute';
-    line.style.width = `${lineLength}px`;
-    line.style.height = `${lineWidth}px`;
-    line.style.backgroundColor = lineColor;
-    line.style.top = `${ startRect.top + startRect.height / 2 - lineWidth / 2 } px`;
-    line.style.left = `${ startRect.left + startRect.width / 2 } px`;
-    line.style.transform = `rotate(${ lineAngle }rad)`;
-    document.getElementById('content').appendChild(line);
+  // Zeichne die Linie
+  const lineColor = "green"; // Linienfarbe
+  const lineWidth = 5; // Linienbreite
+  const startCell = document.querySelectorAll(`td`)[combination[0]]; // Startzelle
+  const endCell = document.querySelectorAll(`td`)[combination[2]]; // Endzelle
+  const startRect = startCell.getBoundingClientRect(); // Startrechteck
+  const endRect = endCell.getBoundingClientRect(); // Endrechteck
+  const contentRect = document // Contentrechteck
+    .getElementById("content") // Hole das Element mit der ID "content"
+    .getBoundingClientRect(); // Hole das Rechteck
+  const lineLength = Math.sqrt(
+    // Länge der Linie
+    Math.pow(endRect.left - startRect.left, 2) + // Länge der Linie
+      Math.pow(endRect.top - startRect.top, 2) // Länge der Linie
+  ); // Länge der Linie
+  const lineAngle = Math.atan2(
+    // Winkel der Linie
+    endRect.top - startRect.top, // Winkel der Linie
+    endRect.left - startRect.left // Winkel der Linie
+  ); // Winkel der Linie
+  const line = document.createElement("div"); // Erstelle ein neues Div-Element
+  line.style.position = "absolute"; // Positioniere das Element absolut
+  line.style.width = `${lineLength}px`; // Breite der Linie
+  line.style.height = `${lineWidth}px`; // Höhe der Linie
+  line.style.backgroundColor = lineColor; // Hintergrundfarbe der Linie
+  line.style.top = `${
+    // Position der Linie
+    startRect.top + startRect.height / 2 - lineWidth / 2 - contentRect.top // Position der Linie
+  }px`; // Position der Linie
+  line.style.left = `${
+    // Position der Linie
+    startRect.left + startRect.width / 2 - contentRect.left // Position der Linie
+  }px`; // Position der Linie
+  line.style.transform = `rotate(${lineAngle}rad)`; // Rotation der Linie
+  line.style.transformOrigin = `top left`; // Ursprung der Rotation
+  document.getElementById("content").appendChild(line); // Füge die Linie zum Content-Element hinzu
 }
