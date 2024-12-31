@@ -8,26 +8,26 @@ const winningCombinations = [
 ];
 
 let currentPlayer = "circle"; // Startspieler
-let winsCircle = parseInt(localStorage.getItem('winsCircle')) || 0;
-let winsCross = parseInt(localStorage.getItem('winsCross')) || 0;
+let winsCircle = parseInt(localStorage.getItem('winsCircle')) || 0; // Punkte für Kreis
+let winsCross = parseInt(localStorage.getItem('winsCross')) || 0; // Punkte für Kreuz
 
-function handleClick(cell, index) {
-  if (fields[index] === null) {
-    fields[index] = currentPlayer;
-    cell.innerHTML = currentPlayer === "circle" ? generateCircleSVG() : generateCrossSVG();
-    cell.onclick = null;
-    currentPlayer = currentPlayer === "circle" ? "cross" : "circle";
+function handleClick(cell, index) { // Funktion für Klick auf Zelle
+  if (fields[index] === null) { // Wenn das Feld leer ist
+    fields[index] = currentPlayer; // Setze das Feld auf den aktuellen Spieler
+    cell.innerHTML = currentPlayer === "circle" ? generateCircleSVG() : generateCrossSVG(); // Setze das Symbol in die Zelle
+    cell.onclick = null; // Entferne den Klick-Listener
+    currentPlayer = currentPlayer === "circle" ? "cross" : "circle"; // Wechsle den Spieler
 
-    if (isGameFinished()) {
-      const winCombination = getWinningCombination();
-      if (winCombination !== null) {
-        drawWinningLine(winCombination);
-        if (fields[winCombination[0]] === "circle") {
-          winsCircle++;
-        } else {
-          winsCross++;
-        }
-        updateLeaderboard();
+    if (isGameFinished()) { // Wenn das Spiel beendet ist
+      const winCombination = getWinningCombination(); // Lese die Gewinnkombination aus
+      if (winCombination !== null) { // Wenn es eine Gewinnkombination gibt
+        drawWinningLine(winCombination); // Zeichne die Gewinnlinie
+        if (fields[winCombination[0]] === "circle") { // Wenn Kreis gewonnen hat
+          winsCircle++; // Punkte für Kreis erhöhen
+        } else { // Ansonsten
+          winsCross++; // Punkte für Kreuz erhöhen
+        } // Ende der Bedingung
+        updateLeaderboard(); // Leaderboard aktualisieren
       }
     }
   }
@@ -37,10 +37,10 @@ function isGameFinished() {
   // Überprüfe, ob das Spiel beendet ist
   return (
     // Wenn alle Felder besetzt sind oder ein Spieler gewonnen hat
-    fields.every((field) => field !== null) || getWinningCombination() !== null
+    fields.every((field) => field !== null) || getWinningCombination() !== null // Wenn alle Felder besetzt sind oder ein Spieler gewonnen hat
   );
 }
-function getWinningCombination() {
+function getWinningCombination() { 
   // Überprüfe, ob ein Spieler gewonnen hat
   for (let i = 0; i < winningCombinations.length; i++) {
     // Gehe alle Kombinationen durch
@@ -58,9 +58,9 @@ function getWinningCombination() {
   return null; // Ansonsten gebe null zurück
 }
 
-function updateLeaderboard() {
-  document.getElementById('wins-circle').textContent = winsCircle;
-  document.getElementById('wins-cross').textContent = winsCross;
+function updateLeaderboard() { // Funktion zum Aktualisieren des Leaderboards
+  document.getElementById('wins-circle').textContent = winsCircle; // Setze die Punkte für Kreis
+  document.getElementById('wins-cross').textContent = winsCross; // Setze die Punkte für Kreuz
   localStorage.setItem('winsCircle', winsCircle); // Speichere die Punkte im localStorage
   localStorage.setItem('winsCross', winsCross); // Speichere die Punkte im localStorage
 }
