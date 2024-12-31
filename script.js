@@ -1,35 +1,34 @@
 let fields = [null, null, null, null, null, null, null, null, null]; // Felder des Spielfelds
 
-const WINNING_COMBINATIONS = [
+const winningCombinations = [
   // Gewinnkombinationen
-  [0, 1, 2], // horizontal
-  [3, 4, 5], // horizontal
-  [6, 7, 8], // horizontal
-  [0, 3, 6], // vertical
-  [1, 4, 7], // vertical
-  [2, 5, 8], // vertical
-  [0, 4, 8], // diagonal
-  [2, 4, 6], // diagonal
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // horizontal
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // vertical
+    [0, 4, 8], [2, 4, 6], // diagonal
 ];
 
-let currentPlayer = "circle"; // Start mit "circle"
+let currentPlayer = "circle"; // Startspieler
+let winsCircle = parseInt(localStorage.getItem('winsCircle')) || 0;
+let winsCross = parseInt(localStorage.getItem('winsCross')) || 0;
 
-// Funktion für das Klicken auf ein Feld
 function handleClick(cell, index) {
-  // Überprüfe, ob das Feld bereits besetzt ist
   if (fields[index] === null) {
-    fields[index] = currentPlayer; // Setze das Feld auf den aktuellen Spieler
-    // Überprüfe, ob ein Spieler gewonnen hat
-    cell.innerHTML =
-      currentPlayer === "circle" ? generateCircleSVG() : generateCrossSVG();
-    cell.onclick = null; // Entferne den onclick listener
-    // Wechsle den Spieler
+    fields[index] = currentPlayer;
+    cell.innerHTML = currentPlayer === "circle" ? generateCircleSVG() : generateCrossSVG();
+    cell.onclick = null;
     currentPlayer = currentPlayer === "circle" ? "cross" : "circle";
 
     if (isGameFinished()) {
-      // Überprüfe, ob das Spiel beendet ist
-      const winCombination = getWinningCombination(); // Hole die kombination, die gewonnen wurde
-      drawWinningLine(winCombination); // Zeichne die Linie
+      const winCombination = getWinningCombination();
+      if (winCombination !== null) {
+        drawWinningLine(winCombination);
+        if (fields[winCombination[0]] === "circle") {
+          winsCircle++;
+        } else {
+          winsCross++;
+        }
+        updateLeaderboard();
+      }
     }
   }
 }
@@ -43,9 +42,9 @@ function isGameFinished() {
 }
 function getWinningCombination() {
   // Überprüfe, ob ein Spieler gewonnen hat
-  for (let i = 0; i < WINNING_COMBINATIONS.length; i++) {
+  for (let i = 0; i < winningCombinations.length; i++) {
     // Gehe alle Kombinationen durch
-    const [a, b, c] = WINNING_COMBINATIONS[i]; // Hole die drei Felder
+    const [a, b, c] = winningCombinations[i]; // Hole die drei Felder
     if (
       // Wenn die Felder gleich sind und nicht null
       fields[a] === fields[b] && // Wenn die Felder gleich sind
@@ -53,10 +52,25 @@ function getWinningCombination() {
       fields[a] !== null // Wenn die Felder nicht null sind
     ) {
       // Dann ist die Kombination gewonnen
-      return WINNING_COMBINATIONS[i]; // Gebe die Kombination zurück
+      return winningCombinations[i]; // Gebe die Kombination zurück
     }
   }
   return null; // Ansonsten gebe null zurück
+}
+
+function updateLeaderboard() {
+  document.getElementById('wins-circle').textContent = winsCircle;
+  document.getElementById('wins-cross').textContent = winsCross;
+  localStorage.setItem('winsCircle', winsCircle); // Speichere die Punkte im localStorage
+  localStorage.setItem('winsCross', winsCross); // Speichere die Punkte im localStorage
+}
+
+function resetLeaderboard() {
+  winsCircle = 0; // Punkte für Kreis zurücksetzen
+  winsCross = 0; // Punkte für Kreuz zurücksetzen
+  localStorage.setItem('winsCircle', winsCircle); // localStorage zurücksetzen
+  localStorage.setItem('winsCross', winsCross); // localStorage zurücksetzen
+  updateLeaderboard(); // Leaderboard aktualisieren
 }
 
 function generateCircleSVG() {

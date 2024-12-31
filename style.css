@@ -4,6 +4,10 @@ body {
   font-family: "Open Sans", sans-serif;
   margin: 0;
   color: white;
+  display: flex;
+  flex-direction: column; /* Stapel für Header, Inhalt und Button */
+  justify-content: center;
+  align-items: center;
 }
 
 h1 {
@@ -14,8 +18,9 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 50vh;
+  height: auto;
   position: relative;
+  margin-bottom: 20px;
 }
 
 /* Tabelle und ihre Zellen */
@@ -55,4 +60,39 @@ table tr:last-child td {
 
 table tr td:last-child {
   border-right: 0;
+}
+
+button {
+  background-color: #00b0ef;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Hover-Effekt für den Button */
+button:hover {
+  background-color: #007bbf;
+}
+
+button:active {
+  background-color: #005f8a;
+  transform: scale(0.98); /* Kleiner gedrückter Button-Effekt */
+}
+
+#leaderboard {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#leaderboard h2 {
+  margin-bottom: 10px;
+}
+
+#leaderboard p {
+  margin: 5px 0;
 }

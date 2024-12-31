@@ -1,6 +1,6 @@
 function init() {
-  // wird aufgerufen, wenn die Seite geladen wird
-  render(); // rendere das Spielfeld
+  render();
+  updateLeaderboard(); // Leaderboard initialisieren
 }
 
 function render() {
@@ -33,4 +33,10 @@ function render() {
 
   // Set table HTML to content div
   contentDiv.innerHTML = tableHTML; // Setze die Tabelle HTML in das Element mit der ID "content"
+}
+
+function restartGame() {
+  fields = Array(9).fill(null); // Spielfeld zurücksetzen
+  currentPlayer = "circle"; // Spieler auf Kreis zurücksetzen
+  render(); // Spielfeld neu rendern
 }

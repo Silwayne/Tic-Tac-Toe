@@ -11,6 +11,16 @@
 
     <div id="content"></div>
 
+    <button onclick="restartGame()">Spiel neu Starten</button>
+
+    <div id="leaderboard">
+      <h2>Leaderboard</h2>
+      <p><strong>Kreis: </strong><span id="wins-circle"> 0</span></p>
+      <p><strong>Kreuz: </strong><span id="wins-cross"> 0</span></p>
+    </div>
+
+    <button onclick="resetLeaderboard()">Leaderboard zurücksetzen</button>
+
     <script src="./script.js"></script>
     <script src="./render.js"></script>
   </body>
